@@ -8,6 +8,8 @@ import { useFrame } from '@react-three/fiber';
 import { useGLTF, useAnimations, useKeyboardControls } from '@react-three/drei';
 import { BallCollider, RigidBody, quat, vec3 } from '@react-three/rapier';
 import { Vector3 } from 'three';
+
+
 const vectorMovement = new Vector3();
 
 export function AdamChar(props) {
@@ -75,7 +77,7 @@ export function AdamChar(props) {
     vectorMovement.set(right - left, 0, backward - forward).multiplyScalar(10 * delta).normalize();
     vectorMovement.applyQuaternion(quat({ ...adamRotation }));
 
-    camera.position.copy(offset);
+    // camera.position.copy(offset);
     adamRef.current.setRotation(quat({ x: adamRotation.x, y: camRotation.y, z: adamRotation.z, w: camRotation.w }))
     adamRef.current.setLinvel(vec3({ x: vectorMovement.x, y: adamVelocity.y, z: vectorMovement.z }), true);
   };
@@ -84,7 +86,7 @@ export function AdamChar(props) {
     <group ref={group} {...props} dispose={null}>
       <group name="Scene">
         <RigidBody ref={adamRef} colliders={false} type='dynamic' position={[0, 2, 1]} lockRotations name='adamBody'>
-          <group name="Armature" rotation={[Math.PI / 2, 0, -Math.PI]} scale={0.008}>
+          <group name="Armature" rotation={[Math.PI / 2, 0, -Math.PI]} scale={0.009}>
             <primitive object={nodes.mixamorig7Hips} />
             <skinnedMesh castShadow name="Ch08_Beard" geometry={nodes.Ch08_Beard.geometry} material={materials.Ch08_hair} skeleton={nodes.Ch08_Beard.skeleton} />
             <skinnedMesh castShadow name="Ch08_Body" geometry={nodes.Ch08_Body.geometry} material={materials.Ch08_body} skeleton={nodes.Ch08_Body.skeleton} />
@@ -94,7 +96,7 @@ export function AdamChar(props) {
             <skinnedMesh castShadow name="Ch08_Pants" geometry={nodes.Ch08_Pants.geometry} material={materials.Ch08_body1} skeleton={nodes.Ch08_Pants.skeleton} />
             <skinnedMesh castShadow name="Ch08_Sneakers" geometry={nodes.Ch08_Sneakers.geometry} material={materials.Ch08_body1} skeleton={nodes.Ch08_Sneakers.skeleton} />
           </group>
-          <BallCollider args={[0.3]} position={[0, 0.25, 0]} />
+          <BallCollider args={[0.4]} position={[0, 0.4, 0]} friction={0} />
         </RigidBody>
       </group>
     </group>
