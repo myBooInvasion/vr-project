@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Suspense, useMemo } from 'react';
 import { Environment, KeyboardControls } from '@react-three/drei';
-import { XR } from '@react-three/xr';
+import { VRButton, XR, Controllers } from '@react-three/xr';
 
 function App() {
   const keyMapping = useMemo(() => [
@@ -15,19 +15,24 @@ function App() {
     { name: 'left', keys: ['a'] },
     { name: 'right', keys: ['d'] },
     { name: 'jump', keys: ['Space'] },
+    { name: 'run', keys: ['ShiftLeft'] },
     { name: 'action', keys: ['f'] },
+    { name: 'reset', keys: ['r'] }
   ], []);
 
   return (
     <div className="canvas-container">
+      <div className='corshair'><ion-icon size="large" name="add-circle-outline"></ion-icon></div>
+      <VRButton sessionInit={{optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking', 'layers']}} />
       <Canvas
         camera={{ position: [0, 2, 3] }}
         shadows='soft'
       >
         <Environment files={'/model/forgotten_miniland_4k.hdr'} background />
 
-        <XR>
+        <XR referenceSpace='local'>
           <Suspense fallback={null}>
+            <Controllers rayMaterial={{ color: 'blue' }} />
             <Physics colliders={false}>
               <Debug />
               <KeyboardControls map={keyMapping}>

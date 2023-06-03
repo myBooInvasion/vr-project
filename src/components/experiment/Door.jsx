@@ -6,21 +6,23 @@ Command: npx gltfjsx@6.1.2 Door.glb --transform --shadows --keepnames
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF, useKeyboardControls } from '@react-three/drei';
-import { RigidBody, quat, useRapier, vec3 } from '@react-three/rapier';
+import { RigidBody, useRapier, vec3, quat } from '@react-three/rapier';
 import { Ray } from '@dimforge/rapier3d-compat';
-import { Quaternion } from 'three';
+import { Quaternion, Vector3 } from 'three';
 
-const qunionRotate = new Quaternion();
+const qunionRotLeft = new Quaternion();
+const qunionRotRight = new Quaternion();
 
 export function Door(props) {
   // Refs
-  const doorRef = useRef();
+  const doorLeft = useRef();
+  const doorRight = useRef();
 
   // useGLTF
   const { nodes, materials } = useGLTF('/model/Door-transformed.glb');
 
   // Keys hook
-  const [,getKey] = useKeyboardControls();
+  const [, getKey] = useKeyboardControls();
 
   // Rapier
   const rapier = useRapier();
@@ -29,30 +31,40 @@ export function Door(props) {
   useFrame((state, delta) => {
     const { action } = getKey();
     const world = rapier.world.raw();
-    const doorPosition = doorRef.current.translation()
-    const ray = new Ray(vec3(doorPosition), vec3({x: 0, y: 0, z: 1}));
-    const intersection = world.castRay(ray, 1.5, false, undefined, undefined, undefined, doorRef.current);
-    
-    if (intersection) {
-      const rotate = doorRef.current.rotation();
-      qunionRotate.copy(quat(rotate));
-      if (action) {
-        qunionRotate._y >= -Math.PI/2 && (qunionRotate._y -= 0.01);
-      } else {
-        qunionRotate._y <= 0 && (qunionRotate._y += 0.01);
-      }
-      doorRef.current.setRotation(quat(qunionRotate));
-    }
+    const [doorLeftPos] = [doorLeft.current.translation()];
+    const rayIn = new Ray(vec3({...doorLeftPos, x: 0}), vec3({ x: 0, y: 0, z: 1 }));
+    // const rayOut = new Ray(vec3(doorRightPos), vec3({ x: 0, y: 0, z: -1 }));
+    const intersectionLeft = world.castRay(rayIn, 1.5, false, 1);
+    console.log(intersectionLeft);
+    // const intersectionRight = world.castRay(rayOut, 1.5, false, 3, undefined, sensor.current);
+
+    // if (intersectionLeft || intersectionRight) {
+    //   const [doorLeftRot, doorRightRot] = [doorLeft.current.rotation(), doorRight.current.rotation()];
+    //   qunionRotLeft.copy(quat(doorLeftRot));
+    //   qunionRotRight.copy(quat(doorRightRot));
+
+    //   if (action) {
+    //     const maxAngle = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI/2);
+    //     qunionRotLeft._y < maxAngle ? qunionRotLeft._y += 0.001 : qunionRotLeft._y = maxAngle._y;
+    //   }
+    //   doorLeft.current.setRotation(quat(qunionRotLeft));
+    // }
   });
 
   return (
     <group {...props} dispose={null}>
-      <RigidBody ref={doorRef} colliders='trimesh' type='fixed' position={[0, 0.2, 0]}>
-        <group name='Doors'>
-          <mesh name="Door" castShadow receiveShadow geometry={nodes.Door.geometry} material={materials['Afromosia Fine Wood']} position={[0, 1.06, 0]} scale={[1, 0.93, 1]} />
-          <mesh name="Glass" receiveShadow geometry={nodes.Glass.geometry} material={materials.Glass} position={[-0.28, 1.1, 0]} />
+      <RigidBody ref={doorLeft} colliders='trimesh' type='fixed' position={[-0.9, 0.3, 0]}>
+        <group name="Door" position={[0, 1.005, 0]}>
+          <mesh name="Cube001" castShadow receiveShadow geometry={nodes.Cube001.geometry} material={materials['Afromosia Fine Wood']} />
+          <mesh name="Cube001_1" receiveShadow geometry={nodes.Cube001_1.geometry} material={materials.Glass} />
         </group>
       </RigidBody>
+      {/* <RigidBody ref={doorRight} colliders='trimesh' type='fixed' position={[0, 0.3, 0]}>
+        <group name="DoorRight" position={[0.465, 0.94, 0]} rotation-y={-Math.PI}>
+          <mesh name="Cube001" castShadow receiveShadow geometry={nodes.Cube001.geometry} material={materials['Afromosia Fine Wood']} />
+          <mesh name="Cube001_1" receiveShadow geometry={nodes.Cube001_1.geometry} material={materials.Glass} />
+        </group>
+      </RigidBody> */}
     </group>
   );
 }

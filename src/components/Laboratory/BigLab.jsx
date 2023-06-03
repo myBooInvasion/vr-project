@@ -13,12 +13,10 @@ export function BigLab(props) {
   return (
     <group ref={group} {...props} dispose={null}>
       <group name="Scene">
-        <group name="RightBuilding" position={[0, 3.55, 0]} scale={0.5}>
-          <mesh name="Cube001" castShadow receiveShadow geometry={nodes.Cube001.geometry} material={materials['Glass Black']} />
-          <mesh name="Cube001_1" castShadow receiveShadow geometry={nodes.Cube001_1.geometry} material={materials['Wall-white']} />
-          <mesh name="Cube001_2" castShadow receiveShadow geometry={nodes.Cube001_2.geometry} material={materials.Grid} />
-          <mesh name="Cube001_3" castShadow receiveShadow geometry={nodes.Cube001_3.geometry} material={materials.Plaster} />
-          <mesh name="Cube001_4" castShadow receiveShadow geometry={nodes.Cube001_4.geometry} material={materials['Plaster.001']} />
+        <group name="LeftBuilding" position={[11.46, 0.5, -18.06]} scale={0.5}>
+          <mesh name="Cube002" castShadow receiveShadow geometry={nodes.Cube002.geometry} material={materials.Grid} />
+          <mesh name="Cube002_1" castShadow receiveShadow geometry={nodes.Cube002_1.geometry} material={materials['Glass Black']} />
+          <mesh name="Cube002_2" castShadow receiveShadow geometry={nodes.Cube002_2.geometry} material={materials.Plaster} />
         </group>
       </group>
     </group>

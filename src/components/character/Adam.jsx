@@ -77,15 +77,15 @@ export function AdamChar(props) {
     vectorMovement.set(right - left, 0, backward - forward).multiplyScalar(10 * delta).normalize();
     vectorMovement.applyQuaternion(quat({ ...adamRotation }));
 
-    // camera.position.copy(offset);
-    adamRef.current.setRotation(quat({ x: adamRotation.x, y: camRotation.y, z: adamRotation.z, w: camRotation.w }))
+    camera.position.copy(offset);
+    adamRef.current.setRotation(quat({ x: adamRotation.x, y: camRotation.y, z: adamRotation.z, w: camRotation.w }));
     adamRef.current.setLinvel(vec3({ x: vectorMovement.x, y: adamVelocity.y, z: vectorMovement.z }), true);
   };
 
   return (
     <group ref={group} {...props} dispose={null}>
       <group name="Scene">
-        <RigidBody ref={adamRef} colliders={false} type='dynamic' position={[0, 2, 1]} lockRotations name='adamBody'>
+        <RigidBody ref={adamRef} colliders={false} type='dynamic' position={[0, 2, 2]} lockRotations name='adamBody' canSleep>
           <group name="Armature" rotation={[Math.PI / 2, 0, -Math.PI]} scale={0.009}>
             <primitive object={nodes.mixamorig7Hips} />
             <skinnedMesh castShadow name="Ch08_Beard" geometry={nodes.Ch08_Beard.geometry} material={materials.Ch08_hair} skeleton={nodes.Ch08_Beard.skeleton} />
